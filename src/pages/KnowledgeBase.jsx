@@ -147,7 +147,6 @@ const EquipmentDetailsCard = ({ data }) => (
 
 const EquipmentOverviewCard = () => (
   <div className="bg-white rounded-xl border p-4 h-full">
-    <p className="text-gray-500 text-sm">Overview component placeholder.</p>
   </div>
 );
 

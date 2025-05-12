@@ -44,11 +44,12 @@ const Sidebar = () => {
   }, []);
 
   useEffect(() => {
-    if (location.pathname === "/" && !(isMobile || isMedium)) {
-      setIsCollapsed(false);
-    } else {
-      setIsCollapsed(true);
-    }
+    // if (location.pathname === "/" && !(isMobile || isMedium)) {
+    //   setIsCollapsed(false);
+    // } else {
+    //   setIsCollapsed(true);
+    // }
+    setIsCollapsed(true);
   }, [location.pathname, isMobile, isMedium]);
   
 
@@ -83,10 +84,16 @@ const Sidebar = () => {
 
         {/* Header */}
         <div className="flex items-center justify-between border-b py-4 mx-4 border-slate-100">
-          {!isCollapsed && (
+          {isCollapsed ? (
+            <img
+              src="flexday-logo.svg"
+              alt="Collapsed Logo"
+              className="h-8 w-8 object-contain"
+            />
+          ) : (
             <img
               src="/logo.svg"
-              alt="Flexday Logo"
+              alt="Full Logo"
               width={115}
               height={28}
               className="object-contain"
@@ -94,7 +101,7 @@ const Sidebar = () => {
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="cursor-pointer p-1 hover:bg-slate-100 rounded-full"
+            className="cursor-pointer p-1 rounded-full"
           >
             {isCollapsed ? (
               <ChevronRightIcon className="h-4 w-4" />
@@ -103,6 +110,7 @@ const Sidebar = () => {
             )}
           </button>
         </div>
+
 
         {/* Scrollable content area */}
         <div className="flex-1 overflow-y-auto">
