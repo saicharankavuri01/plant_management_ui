@@ -18,7 +18,7 @@ const endpoints = [
   { title: "Knowledge Base", icon: BookOpenIcon, endpoint: "/knowledge-base" },
   { title: "Planning", icon: ClipboardDocumentListIcon, endpoint: "/planning" },
   { title: "Work Order Overview", icon: DocumentTextIcon, endpoint: "/workorder-overview" },
-  { title: "Inventory Overview", icon: ClipboardDocumentCheckIcon, endpoint: "" },
+  { title: "Inventory Overview", icon: ClipboardDocumentCheckIcon, endpoint: "inventory-overview" },
 ];
 
 const Sidebar = () => {
@@ -31,20 +31,6 @@ const Sidebar = () => {
 
   const footerOptions = [
     { title: "Settings", icon: Cog6ToothIcon, endpoint: "" },
-    // auth.isAuthenticated
-    //   ? {
-    //       title: "Logout",
-    //       icon: ArrowLeftStartOnRectangleIcon,
-    //       endpoint: "/logout",
-    //       textColor: "text-rose-600",
-    //       action: auth.signoutRedirect, // Trigger logout
-    //     }
-    //   : {
-    //       title: "Log In",
-    //       icon: ArrowRightStartOnRectangleIcon,
-    //       endpoint: "/login",
-    //       textColor: "text-blue-600",
-    //     },
   ];
 
   useEffect(() => {
@@ -58,7 +44,6 @@ const Sidebar = () => {
   }, []);
 
   useEffect(() => {
-    // Only keep sidebar expanded on "/" route for large screens
     if (location.pathname === "/" && !(isMobile || isMedium)) {
       setIsCollapsed(false);
     } else {
@@ -68,16 +53,6 @@ const Sidebar = () => {
   
 
   const handleNavigation = async (endpoint) => {
-    // if (endpoint === "/logout") {
-    //   window.dispatchEvent(new Event("signoutStart"));
-    //   auth.removeUser();
-    //   const clientId = oidcConfig.client_id;
-    //   const logoutUri = oidcConfig.redirect_uri;
-    //   const cognitoDomain = cognito_domain;
-    //   window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
-    //   setTimeout(() => window.dispatchEvent(new Event("signoutEnd")), 300);
-    // }
-
     navigate(endpoint);
     if (isMobile || isMedium) {
       setIsCollapsed(true);
@@ -86,7 +61,6 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Overlay backdrop for mobile/medium when sidebar is expanded */}
       {(isMobile || isMedium) && !isCollapsed && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-20"
@@ -201,13 +175,7 @@ const Sidebar = () => {
               />
               {!isCollapsed && (
                 <div>
-                  <p
-                    className="text-sm font-medium truncate max-w-[150px] overflow-hidden text-ellipsis"
-                    // title={auth.user?.profile?.email} // Show full email on hover
-                  >
-                    {/* {auth.user?.profile?.email?.length > 20
-                      ? auth.user?.profile?.email.substring(0, 17) + "..."
-                      : auth.user?.profile?.email} */}
+                  <p className="text-sm font-medium truncate max-w-[150px] overflow-hidden text-ellipsis">
                     Hima Chebrolu
                   </p>
                 </div>
@@ -217,11 +185,9 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Main content area spacer - add this to your layout container */}
       <div
         className={`${isMobile || isMedium ? "ml-16" : isCollapsed ? "ml-16" : "ml-64"} transition-all duration-300`}
       >
-        {/* Your content goes here */}
       </div>
     </>
   );
