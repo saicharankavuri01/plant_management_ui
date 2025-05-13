@@ -49,7 +49,7 @@ const CustomTooltip = ({ children, content }) => {
 const WorkOrderList = () => {
   const { data = [], isLoading, error } = useGetWorkOrdersQuery();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 7;
 
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
@@ -61,81 +61,85 @@ const WorkOrderList = () => {
   if (error) return <p>Failed to fetch work orders</p>;
 
   return (
-    <div className="bg-white border border-[#D9E1EC] rounded-[14px] p-6 w-full">
-      <p className="text-[#1D2939] font-semibold text-lg mb-4">Work Orders</p>
-      <table className="w-full text-sm text-left text-gray-900 table-fixed">
-        <thead className="text-xs text-gray-500 uppercase bg-gray-50">
-          <tr>
-            <th className="px-4 py-3 w-[10%]">Work Order ID</th>
-            <th className="px-4 py-3 w-[10%]">Equipment ID</th>
-            <th className="px-4 py-3 w-[10%]">Priority</th>
-            <th className="px-4 py-3 w-[12%]">Description</th>
-            <th className="px-4 py-3 w-[8%]">Status</th>
-            <th className="px-4 py-3 w-[10%]">Materials</th>
-            <th className="px-4 py-3 w-[10%]">Assigned To</th>
-            <th className="px-4 py-3 w-[5%]">Est. Cost</th>
-            <th className="px-4 py-3 w-[5%]">Est. Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentOrders.map((wo, idx) => (
-            <tr key={idx} className="border-b hover:bg-gray-50">
-              <td className="px-4 py-3">{wo.work_order_id}</td>
-              <td className="px-4 py-3">{wo.equipment}</td>
-              <td className="px-4 py-3">
-                <span
-                  className={`text-xs font-medium px-2 py-1 rounded ${getPriorityClass(
-                    wo.priority
-                  )}`}
-                >
-                  {wo.priority}
-                </span>
-              </td>
-              <td className="px-4 py-3">
-                <CustomTooltip content={wo.description}>
-                  <div className="truncate w-max max-w-[160px]">
-                    {wo.description && wo.description.length > 10
-                      ? `${wo.description.slice(0, 10)}...`
-                      : wo.description || ""}
-                  </div>
-                </CustomTooltip>
-              </td>
-              <td className="px-4 py-3">
-                <span
-                  className={`text-xs font-medium px-2 py-1 rounded ${getStatusClass(
-                    wo.status
-                  )}`}
-                >
-                  {wo.status}
-                </span>
-              </td>
-              <td className="px-4 py-3">{wo.material_availability}</td>
-              <td className="px-4 py-3">{wo.assigned_to}</td>
-              <td className="px-4 py-3">${wo.estimated_cost}</td>
-              <td className="px-4 py-3">{wo.estimated_time_hours}h</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="bg-white border border-[#D9E1EC] rounded-[14px] p-4 w-full flex flex-col min-h-[400px]">
+  <p className="text-[#1D2939] font-semibold text-lg mb-4">Work Orders</p>
 
-      {/* Pagination Controls */}
-      <div className="flex justify-end mt-4 gap-2">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className="px-3 py-1 text-sm border rounded disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <button
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 text-sm border rounded disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
-    </div>
+  <div className="flex-grow">
+    <table className="w-full text-sm text-left text-gray-900 table-fixed">
+      <thead className="text-xs text-gray-500 uppercase bg-gray-50">
+        <tr>
+          <th className="px-4 py-3 w-[10%]">Work Order ID</th>
+          <th className="px-4 py-3 w-[10%]">Equipment Name</th>
+          <th className="px-4 py-3 w-[10%]">Priority</th>
+          <th className="px-4 py-3 w-[12%]">Description</th>
+          <th className="px-4 py-3 w-[8%]">Status</th>
+          <th className="px-4 py-3 w-[10%]">Materials</th>
+          <th className="px-4 py-3 w-[10%]">Assigned To</th>
+          <th className="px-4 py-3 w-[5%]">Est. Cost</th>
+          <th className="px-4 py-3 w-[5%]">Est. Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {currentOrders.map((wo, idx) => (
+          <tr key={idx} className="border-b hover:bg-gray-50">
+            <td className="px-4 py-3">{wo.work_order_id}</td>
+            <td className="px-4 py-3">
+              <CustomTooltip content={wo.equipment}>
+                <div className="truncate w-max max-w-[160px]">
+                  {wo.equipment && wo.equipment.length > 10
+                    ? `${wo.equipment.slice(0, 10)}...`
+                    : wo.equipment || ""}
+                </div>
+              </CustomTooltip>
+            </td>
+            <td className="px-4 py-3">
+              <span className={`text-xs font-medium px-2 py-1 rounded ${getPriorityClass(wo.priority)}`}>
+                {wo.priority}
+              </span>
+            </td>
+            <td className="px-4 py-3">
+              <CustomTooltip content={wo.description}>
+                <div className="truncate w-max max-w-[160px]">
+                  {wo.description && wo.description.length > 10
+                    ? `${wo.description.slice(0, 10)}...`
+                    : wo.description || ""}
+                </div>
+              </CustomTooltip>
+            </td>
+            <td className="px-4 py-3">
+              <span className={`text-xs font-medium px-2 py-1 rounded ${getStatusClass(wo.status)}`}>
+                {wo.status}
+              </span>
+            </td>
+            <td className="px-4 py-3">{wo.material_availability}</td>
+            <td className="px-4 py-3">{wo.assigned_to}</td>
+            <td className="px-4 py-3">${wo.estimated_cost}</td>
+            <td className="px-4 py-3">{wo.estimated_time_hours}h</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Pagination controls pinned to bottom */}
+  <div className="flex justify-end mt-2 gap-2">
+    <button
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+    >
+      Previous
+    </button>
+    <button
+      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+      disabled={currentPage === totalPages}
+      className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+</div>
+
   );
 };
 
