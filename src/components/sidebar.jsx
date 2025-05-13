@@ -15,7 +15,7 @@ import "../App.css";
 
 const endpoints = [
   { title: "Home", icon: HomeIcon, endpoint: "/" },
-  { title: "Knowledge Base", icon: BookOpenIcon, endpoint: "/knowledge-base" },
+  { title: "Analytics", icon: BookOpenIcon, endpoint: "/knowledge-base" },
   { title: "Planning", icon: ClipboardDocumentListIcon, endpoint: "/planning" },
   { title: "Work Order Overview", icon: DocumentTextIcon, endpoint: "/workorder-overview" },
   { title: "Inventory Overview", icon: ClipboardDocumentCheckIcon, endpoint: "inventory-overview" },

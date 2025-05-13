@@ -1,79 +1,5 @@
 import React, { useState } from "react";
-
-const workOrders = [
-  {
-    id: "WO-12349",
-    equipmentId: "EQ-2054",
-    funcLocId: "FAC-125",
-    priority: "High",
-    description: "Fire extinguisher check",
-    status: "Released",
-    materials: "Available",
-    labor: "Plumber - Susan",
-    cost: "$1,925",
-    time: "2h",
-  },
-  {
-    id: "WO-12348",
-    equipmentId: "EQ-2053",
-    funcLocId: "PLB-05",
-    priority: "Medium",
-    description: "Faulty circuit breaker",
-    status: "Planned",
-    materials: "Available",
-    labor: "Engineer - Daniel",
-    cost: "$1,550",
-    time: "3h",
-  },
-  {
-    id: "WO-12347",
-    equipmentId: "EQ-2052",
-    funcLocId: "ELC-09",
-    priority: "Medium",
-    description: "Industrial printer",
-    status: "Planned",
-    materials: "Partial",
-    labor: "Mechanic - Lisa",
-    cost: "$2,110",
-    time: "5h",
-  },
-  {
-    id: "WO-12346",
-    equipmentId: "EQ-2051",
-    funcLocId: "MCH-22",
-    priority: "High",
-    description: "AC compressor failure",
-    status: "Released",
-    materials: "Partial",
-    labor: "Welder - Tom",
-    cost: "$1,180",
-    time: "4h",
-  },
-  {
-    id: "WO-12345",
-    equipmentId: "EQ-2049",
-    funcLocId: "MCH-27",
-    priority: "Medium",
-    description: "Camera installation",
-    status: "Planned",
-    materials: "Not Available",
-    labor: "Fabricator - Steve",
-    cost: "$915",
-    time: "2.5h",
-  },
-  {
-    id: "WO-12344",
-    equipmentId: "EQ-2048",
-    funcLocId: "FAC-125",
-    priority: "High",
-    description: "Monthly generator test",
-    status: "In Progress",
-    materials: "Available",
-    labor: "Technician - Brian",
-    cost: "$1,465",
-    time: "3.5h",
-  },
-];
+import { useGetWorkOrdersQuery } from "../../services/workOrderApi";
 
 const getPriorityClass = (priority) => {
   switch (priority) {
@@ -81,6 +7,8 @@ const getPriorityClass = (priority) => {
       return "bg-red-50 text-red-600";
     case "Medium":
       return "bg-yellow-50 text-yellow-700";
+    case "Low":
+      return "bg-blue-50 text-blue-600";
     default:
       return "";
   }
@@ -88,18 +16,17 @@ const getPriorityClass = (priority) => {
 
 const getStatusClass = (status) => {
   switch (status) {
-    case "Released":
+    case "released":
       return "bg-green-100 text-green-700";
-    case "Planned":
+    case "planned":
       return "bg-yellow-100 text-yellow-800";
-    case "In Progress":
+    case "inprogress":
       return "bg-orange-100 text-orange-700";
     default:
       return "";
   }
 };
 
-// Custom tooltip component
 const CustomTooltip = ({ children, content }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -120,11 +47,22 @@ const CustomTooltip = ({ children, content }) => {
 };
 
 const WorkOrderList = () => {
+  const { data = [], isLoading, error } = useGetWorkOrdersQuery();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentOrders = data.slice(indexOfFirst, indexOfLast);
+
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Failed to fetch work orders</p>;
+
   return (
     <div className="bg-white border border-[#D9E1EC] rounded-[14px] p-6 w-full">
-      <p className="text-[#1D2939] font-semibold text-lg mb-4">
-        Work Orders
-      </p>
+      <p className="text-[#1D2939] font-semibold text-lg mb-4">Work Orders</p>
       <table className="w-full text-sm text-left text-gray-900 table-fixed">
         <thead className="text-xs text-gray-500 uppercase bg-gray-50">
           <tr>
@@ -134,16 +72,16 @@ const WorkOrderList = () => {
             <th className="px-4 py-3 w-[12%]">Description</th>
             <th className="px-4 py-3 w-[8%]">Status</th>
             <th className="px-4 py-3 w-[10%]">Materials</th>
-            <th className="px-4 py-3 w-[10%]">Labor</th>
+            <th className="px-4 py-3 w-[10%]">Assigned To</th>
             <th className="px-4 py-3 w-[5%]">Est. Cost</th>
             <th className="px-4 py-3 w-[5%]">Est. Time</th>
           </tr>
         </thead>
         <tbody>
-          {workOrders.map((wo, idx) => (
+          {currentOrders.map((wo, idx) => (
             <tr key={idx} className="border-b hover:bg-gray-50">
-              <td className="px-4 py-3">{wo.id}</td>
-              <td className="px-4 py-3">{wo.equipmentId}</td>
+              <td className="px-4 py-3">{wo.work_order_id}</td>
+              <td className="px-4 py-3">{wo.equipment}</td>
               <td className="px-4 py-3">
                 <span
                   className={`text-xs font-medium px-2 py-1 rounded ${getPriorityClass(
@@ -155,10 +93,10 @@ const WorkOrderList = () => {
               </td>
               <td className="px-4 py-3">
                 <CustomTooltip content={wo.description}>
-                  <div className="truncate w-max max-w-[160px] hover">
+                  <div className="truncate w-max max-w-[160px]">
                     {wo.description && wo.description.length > 10
                       ? `${wo.description.slice(0, 10)}...`
-                      : wo.description || ''}
+                      : wo.description || ""}
                   </div>
                 </CustomTooltip>
               </td>
@@ -171,14 +109,32 @@ const WorkOrderList = () => {
                   {wo.status}
                 </span>
               </td>
-              <td className="px-4 py-3">{wo.materials}</td>
-              <td className="px-4 py-3">{wo.labor}</td>
-              <td className="px-4 py-3">{wo.cost}</td>
-              <td className="px-4 py-3">{wo.time}</td>
+              <td className="px-4 py-3">{wo.material_availability}</td>
+              <td className="px-4 py-3">{wo.assigned_to}</td>
+              <td className="px-4 py-3">${wo.estimated_cost}</td>
+              <td className="px-4 py-3">{wo.estimated_time_hours}h</td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-end mt-4 gap-2">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

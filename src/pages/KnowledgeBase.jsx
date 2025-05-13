@@ -213,7 +213,7 @@ const KnowledgeBase = () => {
 
   return (
     <div className="p-4 min-h-screen">
-      <h1 className="text-2xl font-semibold text-[#121F3F] mb-4">Knowledge Base</h1>
+      <h1 className="text-2xl font-semibold text-[#121F3F] mb-4">Analytics</h1>
 
       {!selected && (
         <>

@@ -69,7 +69,7 @@ import { useNavigate } from "react-router-dom";
                   <p className="text-xs text-gray-500">{item.work_order_id}</p>
                   <div className="flex items-center gap-2 text-xs text-gray-600">
                     <MapPinIcon className="h-4 w-4" />
-                    <span>{item.funcLocId || "CA-CA1 (Line 1)"}</span>
+                    <span>{item.functional_location_id || "CA-CA1 (Line 1)"}</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-gray-600">
                     <Cog6ToothIcon className="h-4 w-4" />
